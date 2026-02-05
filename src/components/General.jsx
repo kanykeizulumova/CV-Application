@@ -1,16 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Input from './Input';
 
-export default function General({ addGeneralInfo, onClose }) {
+export default function General({ addGeneralInfo, onClose, data, setIsPreviewVisible }) {
     const [formData, setFormData] = useState({
-        id: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        city: '',
-        country: ''
+        id: data?.id || '',
+        firstName: data?.firstName || '',
+        lastName: data?.lastName || '',
+        email: data?.email || '',
+        phone: data?.phone || '',
+        city: data?.city || '',
+        country: data?.country || ''
     });
+
+    useEffect(() => {
+        if (data) {
+            setFormData({
+                id: data.id || '',
+                firstName: data.firstName || '',
+                lastName: data.lastName || '',
+                email: data.email || '',
+                phone: data.phone || '',
+                city: data.city || '',
+                country: data.country || ''
+            });
+        }
+    }, [data]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -24,14 +38,6 @@ export default function General({ addGeneralInfo, onClose }) {
         e.preventDefault();
         if (formData.firstName.trim() && formData.lastName.trim() && formData.email.trim() && formData.phone.trim() && formData.city.trim() && formData.country.trim()) {
             addGeneralInfo(formData);
-            /*setFormData({
-                firstName: '',
-                lastName: '',
-                email: '',
-                phone: '',
-                city: '',
-                country: ''
-            });*/
         }
     };
     return (

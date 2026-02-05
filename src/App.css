@@ -5,12 +5,40 @@
   text-align: center;
 }
 
-.modal {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 1.5em;
-  margin: 1em;
+/* Делаем правую часть похожей на лист бумаги А4 */
+.preview-section {
+  background-color: white;
+  width: 210mm;
+  /* Ширина А4 */
+  min-height: 297mm;
+  /* Высота А4 */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* Тень для объема */
+  margin: 20px;
+  color: black;
+  /* Текст черным, если фон сайта темный */
+  text-align: left;
 }
+
+/* Стили для блоков внутри резюме */
+.preview-content h2 {
+  font-size: 18px;
+  border-bottom: 2px solid #333;
+  padding-bottom: 5px;
+  margin-top: 20px;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  /* Центрируем всё */
+  gap: 30px;
+  /* Расстояние между формой и листом */
+  flex-wrap: wrap;
+  /* Чтобы на мобилках переносилось */
+}
+
 
 input {
   margin: 0.5em;
@@ -27,12 +55,13 @@ label {
   font-weight: bold;
 }
 
+/*
 .form-step-container {
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 1.5em;
   margin: 1em;
-}
+}*/
 
 .navigation-buttons {
   display: flex;
