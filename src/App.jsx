@@ -75,6 +75,21 @@ function App() {
     setIsFormVisible(true);
     setActiveIndex(index);
   };
+  const deleteGeneral = (id) => {
+    setGeneralInfo(generalInfo.filter(item => item.id !== id));
+  };
+
+  const deleteEducation = (id) => {
+    setEducationInfo(educationInfo.filter(item => item.id !== id));
+  };
+
+  const deleteProfessional = (id) => {
+    setProfessionalInfo(professionalInfo.filter(item => item.id !== id));
+  };
+
+  const deleteSkills = (id) => {
+    setSkillsInfo(skillsInfo.filter(item => item.id !== id));
+  };
 
 
   const togglePreview = () => {
@@ -110,14 +125,14 @@ function App() {
 
               <div className="navigation-buttons">
                 <button
-                  disabled={activeIndex === 0}
+                  disabled={activeIndex === 0 || editingItem !== null}
                   onClick={() => setActiveIndex(activeIndex - 1)}
                 >
                   Back
                 </button>
 
                 <button
-                  disabled={activeIndex === forms.length - 1}
+                  disabled={activeIndex === forms.length - 1 || editingItem !== null}
                   onClick={() => setActiveIndex(activeIndex + 1)}
                 >
                   Next
@@ -140,6 +155,16 @@ function App() {
                     <p>{item.phone}</p>
                     <p>{item.country}, {item.city}</p>
                     <button onClick={() => handleEdit(item, 0)}>Edit</button>
+                    <button
+                      className="delete-button"
+                      onClick={() => {
+                        if (window.confirm('Are you sure you want to delete this general entry?')) {
+                          deleteGeneral(item.id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                 ))}
                 {educationInfo.map((item) => (
@@ -150,6 +175,16 @@ function App() {
                     <p>{item.graduationYear}</p>
                     <p>{item.city}</p>
                     <button onClick={() => handleEdit(item, 1)}>Edit</button>
+                    <button
+                      className="delete-button"
+                      onClick={() => {
+                        if (window.confirm('Are you sure you want to delete this education entry?')) {
+                          deleteEducation(item.id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                 ))}
                 {professionalInfo.map((item) => (
@@ -161,12 +196,32 @@ function App() {
                     <p>{item.functions}</p>
                     <p>{item.city}</p>
                     <button onClick={() => handleEdit(item, 2)}>Edit</button>
+                    <button
+                      className="delete-button"
+                      onClick={() => {
+                        if (window.confirm('Are you sure you want to delete this professional entry?')) {
+                          deleteProfessional(item.id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                 ))}
                 {skillsInfo.map((item) => (
                   <div key={item.id}> Skills
                     <h2>{item.skills}</h2>
                     <button onClick={() => handleEdit(item, 3)}>Edit</button>
+                    <button
+                      className="delete-button"
+                      onClick={() => {
+                        if (window.confirm('Are you sure you want to delete this skills entry?')) {
+                          deleteSkills(item.id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                 ))}
               </div>
