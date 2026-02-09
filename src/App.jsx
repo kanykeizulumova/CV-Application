@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { usePDF } from 'react-to-pdf';
 import './App.css'
 import General from './components/General'
 import Professional from './components/Professional'
@@ -102,6 +103,8 @@ function App() {
     setEditingItem(null);
   };
 
+
+
   const forms = [
     { id: 0, label: 'General', component: <General addGeneralInfo={addGeneralInfo} onClose={toggleForm} data={editingItem} /> },
     { id: 1, label: 'Education', component: <Education addEducationInfo={addEducationInfo} onClose={toggleForm} data={editingItem} /> },
@@ -114,7 +117,7 @@ function App() {
       <h1 className='title'>Create your job-winning CV in just 5 minutes</h1>
       <button className='createCVButton' onClick={toggleForm}> {isFormVisible ? 'Hide form' : 'Create my resume'}</button>
       <button className='previewButton' onClick={togglePreview}>Preview CV</button>
-      <button className='downloadButton'>Download CV</button>
+      <button className='downloadButton' onClick={exportToPdf}>Download CV</button>
       <div className="main-container">
 
         <div className="editor-section">
