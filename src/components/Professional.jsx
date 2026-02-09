@@ -65,7 +65,7 @@ export default function Professional({ onClose, addProfessionalInfo, data }) {
                 <Input label="End Date" name='endDate' value={formData.endDate} onChange={handleChange} type="date" />
                 <Input label="Functions and achievements" name='functions' value={formData.functions} onChange={handleChange} type="text" />
                 <Input label="Location (City, State)" name='city' value={formData.city} onChange={handleChange} type="text" />
-                <button> + Add another</button>
+                <button onClick={handleAddAnother}> + Add another</button>
                 <button type='submit'>Save</button>
                 <button type="button" onClick={onClose}>Cancel</button>
             </form>

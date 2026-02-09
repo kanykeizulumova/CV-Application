@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { usePDF } from 'react-to-pdf';
+import { useState, useRef } from 'react'
+import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 import './App.css'
 import General from './components/General'
 import Professional from './components/Professional'
@@ -8,6 +8,7 @@ import Skills from './components/Skills'
 
 
 function App() {
+  const targetRef = useRef();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [generalInfo, setGeneralInfo] = useState([]);
   const [professionalInfo, setProfessionalInfo] = useState([]);
@@ -16,6 +17,20 @@ function App() {
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [editingItem, setEditingItem] = useState(null);
+
+  const downloadResume = () => {
+    generatePDF(targetRef, {
+      filename: 'resume.pdf',
+      method: 'save',
+      canvas: {
+        qualityRatio: 1 // Улучшает четкость
+      },
+      page: {
+        margin: Margin.MEDIUM,
+        format: 'A4',
+      }
+    });
+  };
 
 
   const addGeneralInfo = (formData) => {
@@ -117,7 +132,7 @@ function App() {
       <h1 className='title'>Create your job-winning CV in just 5 minutes</h1>
       <button className='createCVButton' onClick={toggleForm}> {isFormVisible ? 'Hide form' : 'Create my resume'}</button>
       <button className='previewButton' onClick={togglePreview}>Preview CV</button>
-      <button className='downloadButton' onClick={exportToPdf}>Download CV</button>
+      <button className='downloadButton' onClick={downloadResume}>Download CV</button>
       <div className="main-container">
 
         <div className="editor-section">
@@ -146,89 +161,73 @@ function App() {
             </div>
           )}
         </div>
-        <div className="preview-section">
+        <div className="preview-section" ref={targetRef}>
           {isPreviewVisible && (
-            <>
-              <h3>My Resume Preview</h3>
-              <div className="preview-content">
-                {generalInfo.map((item) => (
-                  <div key={item.id}>
-                    <p>{item.firstName} {item.lastName}</p>
-                    <p>{item.email}</p>
-                    <p>{item.phone}</p>
-                    <p>{item.country}, {item.city}</p>
-                    <button onClick={() => handleEdit(item, 0)}>Edit</button>
-                    <button
-                      className="delete-button"
-                      onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this general entry?')) {
-                          deleteGeneral(item.id);
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
+            <div className="preview-content">
+              {/* HEADER SECTION */}
+              {generalInfo.map((item) => (
+                <div key={item.id} className="cv-header">
+                  <h1>{item.firstName} {item.lastName}</h1>
+                  <div className="cv-contact-info">
+                    <span>{item.email}</span> | <span>{item.phone}</span> | <span>{item.city}, {item.country}</span>
                   </div>
-                ))}
-                {educationInfo.map((item) => (
-                  <div key={item.id}> Education
-                    <h2>{item.school}</h2>
-                    <p>{item.degree}</p>
-                    <p>{item.startDate}</p>
-                    <p>{item.graduationYear}</p>
-                    <p>{item.city}</p>
-                    <button onClick={() => handleEdit(item, 1)}>Edit</button>
-                    <button
-                      className="delete-button"
-                      onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this education entry?')) {
-                          deleteEducation(item.id);
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
+                  <div className="item-actions">
+                    <button className="edit-mini-btn" onClick={() => handleEdit(item, 0)}>Edit</button>
                   </div>
-                ))}
-                {professionalInfo.map((item) => (
-                  <div key={item.id}> Professional Information
-                    <h2>{item.company}</h2>
-                    <p>{item.title}</p>
-                    <p>{item.startDate}</p>
-                    <p>{item.endDate}</p>
-                    <p>{item.functions}</p>
-                    <p>{item.city}</p>
-                    <button onClick={() => handleEdit(item, 2)}>Edit</button>
-                    <button
-                      className="delete-button"
-                      onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this professional entry?')) {
-                          deleteProfessional(item.id);
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
+                </div>
+              ))}
+
+              {/* EDUCATION SECTION */}
+              {educationInfo.length > 0 && <div className="cv-section-title">Education</div>}
+              {educationInfo.map((item) => (
+                <div key={item.id} className="cv-item">
+                  <div className="cv-item-header">
+                    <span>{item.school}</span>
+                    <span>{item.startDate} — {item.graduationYear}</span>
                   </div>
-                ))}
-                {skillsInfo.map((item) => (
-                  <div key={item.id}> Skills
-                    <h2>{item.skills}</h2>
-                    <button onClick={() => handleEdit(item, 3)}>Edit</button>
-                    <button
-                      className="delete-button"
-                      onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this skills entry?')) {
-                          deleteSkills(item.id);
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
+                  <div className="cv-item-sub">
+                    <span>{item.degree}</span>
+                    <span>{item.city}</span>
                   </div>
-                ))}
-              </div>
-            </>
+                  <div className="item-actions">
+                    <button className="edit-mini-btn" onClick={() => handleEdit(item, 1)}>Edit</button>
+                    <button className="delete-mini-btn" onClick={() => deleteEducation(item.id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+
+              {/* PROFESSIONAL SECTION */}
+              {professionalInfo.length > 0 && <div className="cv-section-title">Experience</div>}
+              {professionalInfo.map((item) => (
+                <div key={item.id} className="cv-item">
+                  <div className="cv-item-header">
+                    <span>{item.company}</span>
+                    <span>{item.startDate} — {item.endDate}</span>
+                  </div>
+                  <div className="cv-item-sub">
+                    <span>{item.title}</span>
+                    <span>{item.city}</span>
+                  </div>
+                  <p className="cv-item-desc">{item.functions}</p>
+                  <div className="item-actions">
+                    <button className="edit-mini-btn" onClick={() => handleEdit(item, 2)}>Edit</button>
+                    <button className="delete-mini-btn" onClick={() => deleteProfessional(item.id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+
+              {/* SKILLS SECTION */}
+              {skillsInfo.length > 0 && <div className="cv-section-title">Skills</div>}
+              {skillsInfo.map((item) => (
+                <div key={item.id} className="cv-item">
+                  <p>{item.skills}</p>
+                  <div className="item-actions">
+                    <button className="edit-mini-btn" onClick={() => handleEdit(item, 3)}>Edit</button>
+                    <button className="delete-mini-btn" onClick={() => deleteSkills(item.id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 
